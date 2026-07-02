@@ -30,7 +30,7 @@ class Load:
             conn.port or 1521,
             service_name=conn.schema
         )
-        
+
         self.connection = oracledb.connect(
             user=conn.login,
             password=conn.password,
@@ -79,7 +79,6 @@ class Load:
             raise
 
         finally:
-
             cursor.close()
 
     def carregar(self, chunk):
@@ -108,6 +107,41 @@ class Load:
         except Exception as e:
             logger.error(f"Erro ao carregar dados: {e}")
             self.connection.rollback()
+            raise
+
+        finally:
+            cursor.close()
+
+    def carregar_especialidades(self, df_especialidades):
+
+        quantidade = len(df_especialidades)
+
+        logger.info(f"Carregando {quantidade} especialidades")
+
+        cursor = self.connection.cursor()
+
+        dados = [tuple(x) for x in df_especialidades.values]
+
+        qr_insert = load_sql(
+            "load",
+            "insert_especialidades.sql"
+        )
+
+        try:
+            cursor.executemany(
+                qr_insert,
+                dados
+            )
+
+            self.connection.commit()
+
+            logger.info(
+                f"{quantidade} especialidades carregadas com sucesso"
+            )
+
+        except Exception as e:
+            self.connection.rollback()
+            logger.error(f"Erro ao carregar especialidades: {e}")
             raise
 
         finally:

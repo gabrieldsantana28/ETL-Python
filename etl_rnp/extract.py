@@ -52,17 +52,17 @@ class Extract:
             self.connection.close()
             logger.info("Desconectado do Oracle")
 
-    # ----------------------------- EXTRAÇÃO DOS DADOS - GUIAS ----------------------------- #
+    # ----------------------------- EXTRAÇÃO DOS DADOS - GUIAS e ESPECIALIDADES ----------------------------- #
 
     def extrair_dados(self):
 
         logger.info(f"Iniciando extração da competência: {COMPETENCIAATUAL}")
 
-        qr_dados_rnp = load_sql(
+        qr_dados_guias = load_sql(
             'extract',
             'select_guias_atendimento.sql'
         )
-        chunks = pd.read_sql(qr_dados_rnp, self.connection, params={"competencia": COMPETENCIAATUAL,
+        chunks = pd.read_sql(qr_dados_guias, self.connection, params={"competencia": COMPETENCIAATUAL,
                                                                         "paggerado": PAGGERADO,
                                                                         "unimedexecde": UNIMEDEXECDE,
                                                                         "unimedexecate": UNIMEDEXECATE,
@@ -71,3 +71,19 @@ class Extract:
                 
         for chunk in chunks:
             yield chunk
+
+    def extrair_dados_especialidades(self):
+
+        logger.info("Iniciando extração das especialidades")
+
+        qr_dados_especialidades = load_sql(
+            "extract",
+            "select_especialidades.sql"
+        )
+
+        df_especialidades = pd.read_sql(
+            qr_dados_especialidades,
+            self.connection
+        )
+
+        return df_especialidades
