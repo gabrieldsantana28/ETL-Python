@@ -2,6 +2,7 @@ from airflow.hooks.base import BaseHook
 import logging
 import oracledb
 from utils.sql_loader import load_sql
+from utils.delete_data import delete_data
 import os
 from dotenv import load_dotenv
 logging.basicConfig(
@@ -44,42 +45,17 @@ class Load:
 
     def deletar_dados(self, competencia):
 
-        cursor = self.connection.cursor()
-
-        qr_delete = load_sql(
-            "load",
-            "delete_guias.sql"
+        delete_data(
+            self.connection,
+            load_sql("load", "delete_guias.sql"),
+            {"competencia": competencia}
         )
 
-        try:
-
-            cursor.execute(
-                qr_delete,
-                {"competencia": competencia}
-            )
-
-            registros_deletados = cursor.rowcount
-
-            self.connection.commit()
-
-            logger.info(
-                f"{registros_deletados} registros da competência "
-                f"{competencia} removidos com sucesso"
-            )
-
-        except Exception as e:
-
-            self.connection.rollback()
-
-            logger.error(
-                f"Erro ao remover dados da competência "
-                f"{competencia}: {e}"
-            )
-
-            raise
-
-        finally:
-            cursor.close()
+        delete_data(
+            self.connection,
+            load_sql("load", "delete_especialidades.sql")
+        )
+        
 
     def carregar(self, chunk):
         logger.info(f"Carregando {len(chunk)} registros")
