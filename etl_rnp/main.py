@@ -13,8 +13,13 @@ def executar():
 
         loader.deletar_dados(COMPETENCIAATUAL)
 
+        # Extração e carregamento das guias
         for chunk in extractor.extrair_dados():
             loader.carregar(chunk)
+
+        # Extração e carregamento das especialidades
+        df_especialidades = extractor.extrair_dados_especialidades()
+        loader.carregar_especialidades(df_especialidades)
 
     finally:
         extractor.desconectar_extract()

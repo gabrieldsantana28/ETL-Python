@@ -2,7 +2,7 @@ from pathlib import Path
 
 def load_sql(etapa, file_name):
 
-    sql_file = (
+    sql_file = (    
         Path(__file__).parent.parent
         / "sql"
         / etapa
