@@ -8,12 +8,12 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-def load_data(connection, chunk, sql_insert, descricao):
-        logger.info(f"Carregando {len(chunk)} {descricao}")
+def load_data(connection, dataframe, sql_insert, descricao):
+        logger.info(f"Carregando {len(dataframe)} {descricao}")
 
         cursor = connection.cursor()
 
-        dados = [tuple(x) for x in chunk.values]
+        dados = [tuple(x) for x in dataframe.values]
         
         qr_insert = load_sql(
             "load",
@@ -32,7 +32,7 @@ def load_data(connection, chunk, sql_insert, descricao):
             )
 
         except Exception as e:
-            logger.error(f"Erro ao carregar dados: {e}")
+            logger.error(f"Erro ao carregar {descricao}: {e}")
             connection.rollback()
             raise
 
