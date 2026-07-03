@@ -15,7 +15,7 @@ def executar():
 
         # Extração e carregamento das guias
         for chunk in extractor.extrair_dados():
-            loader.carregar(chunk)
+            loader.carregar_guias(chunk)
 
         # Extração e carregamento das especialidades
         df_especialidades = extractor.extrair_dados_especialidades()

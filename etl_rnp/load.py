@@ -3,6 +3,7 @@ import logging
 import oracledb
 from utils.sql_loader import load_sql
 from utils.delete_data import delete_data
+from utils.load_data import load_data
 import os
 from dotenv import load_dotenv
 logging.basicConfig(
@@ -18,6 +19,16 @@ class Load:
 
     def __init__(self):
         self.connection = None
+
+        self.sql_insert_guias = load_sql(
+                "load",
+                "insert_guias.sql"
+            )
+
+        self.sql_insert_especialidades = load_sql(
+            "load",
+            "insert_especialidades.sql"
+        )
 
     def conectar_load(self):
 
@@ -57,65 +68,18 @@ class Load:
         )
         
 
-    def carregar(self, chunk):
-        logger.info(f"Carregando {len(chunk)} registros")
-
-        cursor = self.connection.cursor()
-
-        dados = [tuple(x) for x in chunk.values]
-        
-        qr_insert = load_sql(
-            "load",
-            "insert_guias.sql"
+    def carregar_guias(self, chunk):
+        load_data(
+            self.connection,
+            chunk,
+            self.sql_insert_guias,
+            "guias"
         )
-
-        try:
-            cursor.executemany(
-                qr_insert, 
-                dados
-            )
-
-            self.connection.commit()
-            logger.info(
-                f"{len(dados)} registros carregados com sucesso"
-            )
-
-        except Exception as e:
-            logger.error(f"Erro ao carregar dados: {e}")
-            self.connection.rollback()
-            raise
-
-        finally:
-            cursor.close()
 
     def carregar_especialidades(self, df_especialidades):
-        logger.info(f"Carregando {len(df_especialidades)} registros")
-
-        cursor = self.connection.cursor()
-
-        dados = [tuple(x) for x in df_especialidades.values]
-
-        qr_insert = load_sql(
-            "load",
-            "insert_especialidades.sql"
+        load_data(
+            self.connection,
+            df_especialidades,
+            self.sql_insert_especialidades,
+            "especialidades"
         )
-
-        try:
-            cursor.executemany(
-                qr_insert,
-                dados
-            )
-
-            self.connection.commit()
-
-            logger.info(
-                f"{len(df_especialidades)} especialidades carregadas com sucesso"
-            )
-
-        except Exception as e:
-            self.connection.rollback()
-            logger.error(f"Erro ao carregar especialidades: {e}")
-            raise
-
-        finally:
-            cursor.close()
