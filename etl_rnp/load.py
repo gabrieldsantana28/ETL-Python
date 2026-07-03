@@ -89,10 +89,7 @@ class Load:
             cursor.close()
 
     def carregar_especialidades(self, df_especialidades):
-
-        quantidade = len(df_especialidades)
-
-        logger.info(f"Carregando {quantidade} especialidades")
+        logger.info(f"Carregando {len(df_especialidades)} registros")
 
         cursor = self.connection.cursor()
 
@@ -112,7 +109,7 @@ class Load:
             self.connection.commit()
 
             logger.info(
-                f"{quantidade} especialidades carregadas com sucesso"
+                f"{len(df_especialidades)} especialidades carregadas com sucesso"
             )
 
         except Exception as e:
