@@ -59,63 +59,24 @@ class Extract:
 
         logger.info(f"Iniciando extração da competência: {COMPETENCIAATUAL}")
 
-        qr_dados_guias = load_sql(
-            'extract',
-            'select_guias_atendimento.sql'
-        )
-        chunks = pd.read_sql(qr_dados_guias, self.connection, params={"competencia": COMPETENCIAATUAL,
-                                                                        "paggerado": PAGGERADO,
-                                                                        "unimedexecde": UNIMEDEXECDE,
-                                                                        "unimedexecate": UNIMEDEXECATE,
-                                                                        "tipoprest": TIPOPREST}, 
-                                                                        chunksize=15000)
-                
-        for chunk in chunks:
-            yield chunk
+        yield from extract_chunks(self.connection, 'extract', 'select_guias_atendimento.sql', params={"competencia": COMPETENCIAATUAL,
+                                                                                           "paggerado": PAGGERADO,
+                                                                                           "unimedexecde": UNIMEDEXECDE,
+                                                                                           "unimedexecate": UNIMEDEXECATE,
+                                                                                           "tipoprest": TIPOPREST}, chunksize=15000)
 
     def extrair_especialidades(self):
-
         logger.info("Iniciando extração das especialidades")
 
-        qr_dados_especialidades = load_sql(
-            "extract",
-            "select_especialidades.sql"
-        )
+        return extract_dataframe(self.connection, 'extract', 'select_especialidades.sql')   
 
-        df_especialidades = pd.read_sql(
-            qr_dados_especialidades,
-            self.connection
-        )
-
-        return df_especialidades
     
     def extrair_itens(self):
-        
         logger.info("Iniciando extração dos itens")
 
-        qr_dados_itens = load_sql(
-            "extract",
-            "select_itens.sql"
-        )
-        chunks = pd.read_sql(qr_dados_itens, self.connection, chunksize=15000)
-
-        for chunk in chunks:
-            yield chunk
+        yield from extract_chunks(self.connection, 'extract', 'select_itens.sql', chunksize=15000)
 
     def extrair_itens_especialidades(self):
-
         logger.info("Iniciando extração da tabela itens_especialidades")
 
-        qr_dados_itens_especialidades = load_sql(
-            "extract",
-            "select_itens_especialidades.sql"
-        )
-
-        chunks = pd.read_sql(
-            qr_dados_itens_especialidades,
-            self.connection,
-            chunksize=15000
-        )
-
-        for chunk in chunks:
-            yield chunk
+        yield from extract_chunks(self.connection, 'extract', 'select_itens_especialidades.sql', chunksize=15000)
