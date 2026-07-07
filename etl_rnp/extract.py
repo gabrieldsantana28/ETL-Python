@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 from pathlib import Path
 from utils.sql_loader import load_sql
+from utils.extract_data import extract_chunks, extract_dataframe
 import os
 from dotenv import load_dotenv
 from configs import PAGGERADO, UNIMEDEXECDE, UNIMEDEXECATE, TIPOPREST, COMPETENCIAATUAL
@@ -116,4 +117,5 @@ class Extract:
             chunksize=15000
         )
 
-        return chunks
+        for chunk in chunks:
+            yield chunk
