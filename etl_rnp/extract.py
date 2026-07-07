@@ -61,15 +61,19 @@ class Extract:
 
         logger.info(f'Iniciando extração da competência: {COMPETENCIAATUAL}')
 
+        params = {
+            "competencia": COMPETENCIAATUAL,
+            "paggerado": PAGGERADO,
+            "unimedexecde": UNIMEDEXECDE,
+            "unimedexecate": UNIMEDEXECATE,
+            "tipoprest": TIPOPREST,
+        }
+
         yield from extract_chunks(
             self.connection, 
             'extract', 
             'select_guias_atendimento.sql', 
-            params={'competencia': COMPETENCIAATUAL,
-                    'paggerado': PAGGERADO,
-                    'unimedexecde': UNIMEDEXECDE,
-                    'unimedexecate': UNIMEDEXECATE,
-                    'tipoprest': TIPOPREST}, 
+            params=params, 
             chunksize=15000
         )
 
