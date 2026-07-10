@@ -66,6 +66,16 @@ class Load:
             self.connection,
             load_sql("load", "delete_especialidades.sql")
         )
+
+        delete_data(
+            self.connection,
+            load_sql("load", "delete_itens.sql")
+        )
+
+        delete_data(
+            self.connection,
+            load_sql("load", "delete_itens_especialidades.sql")
+        )
         
 
     def carregar_guias(self, chunk):
