@@ -1,0 +1,11 @@
+PACOTE COMPLEMENTAR — ETL-Python / N2-P2
+
+1. Descompacte o ZIP na raiz do clone do repositório ETL-Python.
+2. Não sobrescreva arquivos existentes. Este pacote não contém o código-fonte existente nem altera .gitignore.
+3. O arquivo README_GCS.md é complementar: adicione ao README principal um link para docs/PLANO_GCS.md. Caso não exista README.md, você pode renomear README_GCS.md para README.md.
+4. Crie uma branch docs/plano-gcs e publique via Pull Request.
+5. Configure manualmente Ruleset, colaborador e environments conforme docs/GUIA_AVALIACAO.md.
+6. Produza e publique as evidências reais.
+7. Envie o link do repositório ao professor.
+
+IMPORTANTE: O workflow é somente demonstrativo. Não executa Airflow, Python ou deploy real.

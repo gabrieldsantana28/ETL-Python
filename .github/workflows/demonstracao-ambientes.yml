@@ -1,0 +1,25 @@
+name: Demonstracao de ambientes GCS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  staging:
+    name: Validacao em staging
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Confirmar ambiente de demonstracao
+        run: echo 'Ambiente staging validado; nenhuma ETL executada.'
+
+  production:
+    name: Aprovacao de production
+    needs: staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Confirmar aprovacao demonstrativa
+        run: echo 'Ambiente production liberado conforme protecoes configuradas no GitHub; nenhum deploy realizado.'
